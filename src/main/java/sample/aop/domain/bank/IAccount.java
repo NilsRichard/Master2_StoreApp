@@ -1,8 +1,12 @@
 package sample.aop.domain.bank;
 
+/**
+ * @author Nils Richard
+ * @author Dorian Bouillet
+ */
 public interface IAccount {
 
-	public boolean debit(double amount);
+    boolean debit(double amount);
 
-	public boolean credit(double amount);
+    boolean credit(double amount);
 }

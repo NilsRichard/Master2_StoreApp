@@ -13,87 +13,90 @@ import sample.aop.domain.bank.IAccount;
 import sample.aop.domain.bank.IBank;
 import sample.aop.domain.provider.IProvider;
 
+/**
+ * @author Nils Richard
+ * @author Dorian Bouillet
+ */
 @Component
 public class Store implements IStore, IFastLane, ILane, IJustHaveALook {
 
-	@Autowired
-	IBank bank;
+    @Autowired
+    IBank bank;
 
-	@Autowired
-	IProvider provider;
+    @Autowired
+    IProvider provider;
 
-	@Resource(name="storeAccount")
-	IAccount storeAccount;
+    @Resource(name = "storeAccount")
+    IAccount storeAccount;
 
-	HashMap<String, Integer> stockQuantity = new HashMap<String, Integer>();
+    HashMap<String, Integer> stockQuantity = new HashMap<>();
 
-	List<String> cart = new ArrayList<String>();
+    List<String> cart = new ArrayList<>();
 
-	public Store() {
-		stockQuantity.put("computer", 1);
-		stockQuantity.put("chair", 15);
-		stockQuantity.put("table", 5);
-	}
+    public Store() {
+        stockQuantity.put("computer", 1);
+        stockQuantity.put("chair", 15);
+        stockQuantity.put("table", 5);
+    }
 
-	private void updateStock(String articleName) {
-		int nb = this.stockQuantity.get(articleName);
-		this.stockQuantity.put(articleName, nb - 1);
-	}
+    private void updateStock(String articleName) {
+        int nb = this.stockQuantity.get(articleName);
+        this.stockQuantity.put(articleName, nb - 1);
+    }
 
-	@Override
-	public double getPrice(String articleName) {
-		return provider.getPrice(articleName) * 1.16;
-	}
+    @Override
+    public double getPrice(String articleName) {
+        return provider.getPrice(articleName) * 1.16;
+    }
 
-	@Override
-	public boolean isAvailable(String articleName) {
-		return this.stockQuantity.get(articleName) > 0;
-	}
+    @Override
+    public boolean isAvailable(String articleName) {
+        return this.stockQuantity.get(articleName) > 0;
+    }
 
-	@Override
-	public void addItemToCart(String articleName) {
-		this.cart.add(articleName);
-	}
+    @Override
+    public void addItemToCart(String articleName) {
+        this.cart.add(articleName);
+    }
 
-	@Override
-	public boolean pay(IAccount clientAccount) {
-		double total = 0;
-		for (String item : cart) {
-			total += getPrice(item);
-		}
+    @Override
+    public boolean pay(IAccount clientAccount) {
+        double total = 0;
+        for (String item : cart) {
+            total += getPrice(item);
+        }
 
-		boolean success = bank.transfert(clientAccount, this.storeAccount, total);
+        boolean success = bank.transfer(clientAccount, this.storeAccount, total);
 
-		if (!success)
-			return false;
-		else {
-			for (String item : cart) {
-				updateStock(item);
-				if (!isAvailable(item))
-					provider.order(item);
-			}
-		}
+        if (!success)
+            return false;
+        else {
+            for (String item : cart) {
+                updateStock(item);
+                if (!isAvailable(item))
+                    provider.order(item);
+            }
+        }
 
-		if (success)
-			cart.clear();
+        cart.clear();
 
-		return success;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean oneShotOrder(IAccount clientAccount, String articleName) {
-		if (!isAvailable(articleName))
-			return false;
+    @Override
+    public boolean oneShotOrder(IAccount clientAccount, String articleName) {
+        if (!isAvailable(articleName))
+            return false;
 
-		boolean success = bank.transfert(clientAccount, this.storeAccount, getPrice(articleName));
+        boolean success = bank.transfer(clientAccount, this.storeAccount, getPrice(articleName));
 
-		if (success) {
-			updateStock(articleName);
-			if (!isAvailable(articleName))
-				provider.order(articleName);
-		}
+        if (success) {
+            updateStock(articleName);
+            if (!isAvailable(articleName))
+                provider.order(articleName);
+        }
 
-		return success;
-	}
+        return success;
+    }
 
 }

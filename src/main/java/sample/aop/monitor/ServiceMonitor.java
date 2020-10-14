@@ -16,41 +16,39 @@
 
 package sample.aop.monitor;
 
-import java.util.Arrays;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Nils Richard
+ * @author Dorian Bouillet
+ */
 @Aspect
 @Component
 public class ServiceMonitor {
 
-	@AfterReturning("execution(* sample..*Service.*(..))")
-	public void logServiceAccess(JoinPoint joinPoint) {
-	}
 
-	@Before("execution(* sample..*.*(..))")
-	public void log(JoinPoint joinPoint) {
-		System.out.println(
-				"Method called : " + joinPoint.getSignature().getName() + " in Bean : " + joinPoint.getTarget());
-	}
+    @Before("execution(* sample..*.*(..))")
+    public void log(JoinPoint joinPoint) {
+        System.out.println(
+                "Method called : " + joinPoint.getSignature().getName() + " in Bean : " + joinPoint.getTarget());
+    }
 
-	@Around("execution(public boolean pay(..))")
-	public boolean securePayment(ProceedingJoinPoint joinPoint) {
-		System.out.println("Securing payment...");
-		boolean ret = false;
-		try {
-			ret = (boolean) joinPoint.proceed();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		System.out.println("Payment performed safely.");
-		return ret;
-	}
+    @Around("execution(public boolean pay(..))")
+    public boolean securePayment(ProceedingJoinPoint joinPoint) {
+        System.out.println("Securing payment...");
+        boolean ret = false;
+        try {
+            ret = (boolean) joinPoint.proceed();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        System.out.println("Payment performed safely.");
+        return ret;
+    }
 
 }

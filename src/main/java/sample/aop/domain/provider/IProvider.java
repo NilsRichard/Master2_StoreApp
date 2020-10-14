@@ -1,8 +1,12 @@
 package sample.aop.domain.provider;
 
+/**
+ * @author Nils Richard
+ * @author Dorian Bouillet
+ */
 public interface IProvider {
 
-	public float getPrice(String articleName);
+    float getPrice(String articleName);
 
-	public void order(String articleName);
+    void order(String articleName);
 }

@@ -1,9 +1,13 @@
 package sample.aop.domain.store;
 
+/**
+ * @author Nils Richard
+ * @author Dorian Bouillet
+ */
 public interface IJustHaveALook extends IStore {
 
-	public double getPrice(String name);
-	
-	public boolean isAvailable(String name);
-	
+    double getPrice(String name);
+
+    boolean isAvailable(String name);
+
 }
