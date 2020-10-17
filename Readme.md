@@ -12,4 +12,4 @@ Nous avons ajouté les deux fonctionnalités d'AOP demandées.<br>
 *cf. la classe* `ServiceMonitor` *dans le package* `monitor`
 
 ## Partie 3
-TODO
+Voir https://github.com/NilsRichard/Spring2020
